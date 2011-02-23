@@ -66,6 +66,8 @@ class Storage():
         Adds a connection to storage file
         """
         f = open(self.storage_file, 'a')
+        # I bet conditional below can be really done in single line
+        # (I'd use ternary operator in PHP here, btw)
         if connection.extra_args == None:
             extra_args = ''
         else:
@@ -150,6 +152,7 @@ if __name__ == "__main__":
         # Handle parameters
         if params.listing != None:
             for conn in Storage().connections.values():
+                # Another possibly lame, non-Python-fu conditional below 
                 if conn.extra_args != '':
                     extra_args = conn.extra_args + ' '
                 else:
