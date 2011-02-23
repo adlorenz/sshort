@@ -38,7 +38,7 @@ Getting help:
 ## Storage engine
 
 Connections are stored in $HOME/.sshort file by default in following,
-pipe-separated format, example:
+pipe-separated format:
     name|user@host.com|-p 1234
     
 ## Disclaimer
