@@ -32,6 +32,9 @@ Removing sshort connection:
 Listing all stored connections:
     sshort -l
     
+Getting help:
+    sshort -h
+    
 ## Storage engine
 
 Connections are stored in $HOME/.sshort file by default in following,
