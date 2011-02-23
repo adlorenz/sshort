@@ -3,7 +3,7 @@ import os
 import optparse
 
 """
-@summary: sshort - ssh connection helper
+@summary: sshort - ssh connection helper 
 @author: Dawid Lorenz, dawid@lorenz.co
 """
 
