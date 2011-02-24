@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import os
 import optparse
+import sys
 
 """
 @summary: sshort - ssh connection helper 
@@ -100,12 +101,12 @@ class Storage():
             self.add_connection_to_storage(connection)
             self.load_connections_from_storage()
     
-    def remove(self, connection):
+    def remove(self, name):
         """
-        Remove connection
+        Remove connection by name
         """
-        if self.connections.has_key(connection.name):
-            self.connections.pop(connection.name)
+        if self.connections.has_key(name):
+            self.connections.pop(name)
             self.reset_storage()
             self.load_connections_from_storage()
 
@@ -147,7 +148,7 @@ if __name__ == "__main__":
         connection.execute()
     except NameError as e:
         # Display error if connection doesn't exist
-        print e
+        sys.stderr.write(e.message + "\n")
     except IndexError:
         # Handle parameters
         if params.listing != None:
@@ -157,7 +158,7 @@ if __name__ == "__main__":
                     extra_args = conn.extra_args + ' '
                 else:
                     extra_args = ''
-                print "%s: %s%s" % (conn.name, extra_args, conn.target)
+                sys.stdout.write("%s: %s%s\n" % (conn.name, extra_args, conn.target))
         elif params.store != None and params.target != None:
             name = params.store
             target = params.target
@@ -165,6 +166,4 @@ if __name__ == "__main__":
             connection = SshortConnection(name, target, extra_args)
             Storage().store(connection)
         elif params.remove != None:
-            s = Storage()
-            connection = s.get(params.remove)
-            s.remove(connection)
+            Storage().remove(params.remove)
