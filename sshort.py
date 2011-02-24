@@ -29,7 +29,7 @@ class SshortConnection():
 
 class Storage():
     """
-    Object panaging persistence of connections within a storage file 
+    Object managing persistence of connections within a storage file 
     which is located in $HOME/.sshort by default
     """
     storage_file = None
