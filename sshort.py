@@ -150,6 +150,7 @@ if __name__ == "__main__":
         # Try executing a connection
         connection_name = args[0]
         connection = Storage().get(connection_name)
+        sys.stdout.write('Executing connection %s\n' % connection.name)
         connection.execute()
     except NameError as e:
         # Display error if connection doesn't exist
@@ -180,5 +181,7 @@ if __name__ == "__main__":
             extra_args = params.target_extra_args
             connection = SshortConnection(name, target, extra_args)
             Storage().store(connection)
+            sys.stdout.write('Saved connection %s\n' % connection.name)
         elif params.remove != None:
             Storage().remove(params.remove)
+            sys.stdout.write('Deleted connection %s\n' % params.remove)
