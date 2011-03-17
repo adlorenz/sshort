@@ -32,8 +32,11 @@ Removing sshort connection:
 Listing all stored connections:
     sshort.py -l
     
-Exporting stored connections into format directly pluggable into ~/.ssh/config (outputs to STDOUT)
-	sshort.py -e
+Exporting all stored connections to format directly pluggable into ~/.ssh/config (outputs to STDOUT):
+	sshort.py -x
+    
+Exporting single connection to ~/.ssh/config format:
+	sshort.py -e name
     
 Getting help:
     sshort.py -h
