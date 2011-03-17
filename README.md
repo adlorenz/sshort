@@ -30,10 +30,13 @@ Removing sshort connection:
     sshort.py -r name
     
 Listing all stored connections:
-    sshort -l
+    sshort.py -l
+    
+Exporting stored connections into format directly pluggable into ~/.ssh/config (outputs to STDOUT)
+	sshort.py -e
     
 Getting help:
-    sshort -h
+    sshort.py -h
     
 ## Storage engine
 
