@@ -139,6 +139,11 @@ if __name__ == "__main__":
                       dest="listing", 
                       help='list all saved sshort connections')
     
+    parser.add_option('-e', '--export', 
+                      action="store_true", 
+                      dest="export", 
+                      help='export all connections into ~/.ssh/config friendly format')
+    
     (params, args) = parser.parse_args()
 
     try:
@@ -159,6 +164,16 @@ if __name__ == "__main__":
                 else:
                     extra_args = ''
                 sys.stdout.write("%s: %s%s\n" % (conn.name, extra_args, conn.target))
+        elif params.export != None:
+            for conn in Storage().connections.values():
+                h = conn.target.split('@')
+                username = h[0]
+                hostname = h[1]
+                if conn.extra_args != '' and conn.extra_args.find('-p') != -1:
+                    port = conn.extra_args.replace('-p', 'Port') + '\n'
+                else:
+                    port = ''
+                sys.stdout.write("Host %s\nHostName %s\nUser %s\n%s\n" % (conn.name, hostname, username, port))
         elif params.store != None and params.target != None:
             name = params.store
             target = params.target
