@@ -171,10 +171,10 @@ if __name__ == "__main__":
                 username = h[0]
                 hostname = h[1]
                 if conn.extra_args != '' and conn.extra_args.find('-p') != -1:
-                    port = conn.extra_args.replace('-p', 'Port') + '\n'
+                    port = '\t' + conn.extra_args.replace('-p', 'Port') + '\n'
                 else:
                     port = ''
-                sys.stdout.write("Host %s\nHostName %s\nUser %s\n%s\n" % (conn.name, hostname, username, port))
+                sys.stdout.write("Host %s\n\tHostName %s\n\tUser %s\n%s\n" % (conn.name, hostname, username, port))
         elif params.store != None and params.target != None:
             name = params.store
             target = params.target
