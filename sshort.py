@@ -82,8 +82,8 @@ class Storage():
         """
         f = open(self.storage_file, 'w')    # Truncate storage file first
         f.close()
-        for conn in self.connections.values():
-            self.add_connection_to_storage(conn)
+        for connection in self.connections.values():
+            self.add_connection_to_storage(connection)
         
     def get(self, name):
         """
@@ -110,6 +110,26 @@ class Storage():
             self.reset_storage()
             self.load_connections_from_storage()
 
+class Output():
+    
+    def output_connection_as_sshconf(self, connection):
+        h = connection.target.split('@')
+        username = h[0]
+        hostname = h[1]
+        if connection.extra_args != '' and connection.extra_args.find('-p') != -1:
+            port = '\t' + connection.extra_args.replace('-p', 'Port') + '\n'
+        else:
+            port = ''
+        sys.stdout.write("Host %s\n\tHostName %s\n\tUser %s\n%s\n" % (connection.name, hostname, username, port))
+
+    def output_connection_as_listing(self, connection):
+        if connection.extra_args != '':
+            extra_args = connection.extra_args + ' '
+        else:
+            extra_args = ''
+        sys.stdout.write("%s: %s%s\n" % (connection.name, extra_args, connection.target))
+
+
 if __name__ == "__main__":
     # Setup option parser first
     parser = optparse.OptionParser("Usage: %prog NAME")
@@ -134,15 +154,23 @@ if __name__ == "__main__":
                             metavar='NAME')
     parser.add_option_group(group_remove)
     
+    group_export = optparse.OptionGroup(parser, 'Exporting connections to ~/.ssh/config friendly format')
+    group_export.add_option('-e', '--export', 
+                            action="store", 
+                            dest="export", 
+                            help='export connection',
+                            metavar="NAME")
+    
+    group_export.add_option('-x', '--export-all', 
+                            action="store_true", 
+                            dest="export_all", 
+                            help='export all connections')
+    parser.add_option_group(group_export)
+    
     parser.add_option('-l', '--list', 
                       action="store_true", 
                       dest="listing", 
                       help='list all saved sshort connections')
-    
-    parser.add_option('-e', '--export', 
-                      action="store_true", 
-                      dest="export", 
-                      help='export all connections into ~/.ssh/config friendly format')
     
     (params, args) = parser.parse_args()
 
@@ -158,23 +186,18 @@ if __name__ == "__main__":
     except IndexError:
         # Handle parameters
         if params.listing != None:
-            for conn in Storage().connections.values():
-                # Another possibly lame, non-Python-fu conditional below 
-                if conn.extra_args != '':
-                    extra_args = conn.extra_args + ' '
-                else:
-                    extra_args = ''
-                sys.stdout.write("%s: %s%s\n" % (conn.name, extra_args, conn.target))
+            for connection in Storage().connections.values():
+                Output().output_connection_as_listing(connection);
+        elif params.export_all != None:
+            out = Output();
+            for connection in Storage().connections.values():
+                out.output_connection_as_sshconf(connection)
         elif params.export != None:
-            for conn in Storage().connections.values():
-                h = conn.target.split('@')
-                username = h[0]
-                hostname = h[1]
-                if conn.extra_args != '' and conn.extra_args.find('-p') != -1:
-                    port = '\t' + conn.extra_args.replace('-p', 'Port') + '\n'
-                else:
-                    port = ''
-                sys.stdout.write("Host %s\n\tHostName %s\n\tUser %s\n%s\n" % (conn.name, hostname, username, port))
+            try:
+                connection = Storage().get(params.export)
+                Output().output_connection_as_sshconf(connection)
+            except NameError as e:
+                sys.stderr.write(e.message + "\n")
         elif params.store != None and params.target != None:
             name = params.store
             target = params.target
